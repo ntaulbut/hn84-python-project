@@ -3,3 +3,4 @@ Lib/
 Include/
 pyvenv.cfg
 __pycache__/
+apps/__pycache__/
