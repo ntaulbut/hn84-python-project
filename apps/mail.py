@@ -135,6 +135,7 @@ def mail_app():
     selection_index = 0
     while run:
         display()
+    clear()
 
 
 if __name__ == "__main__":

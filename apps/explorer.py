@@ -1,22 +1,25 @@
 from utils import inc_b, dec_b
 import keyboard
+from colorama import Fore, Back, Style
 
+def formatSelected(text):
+    return (Back.WHITE + Fore.BLACK + text + Style.RESET_ALL)
 
 def getSelectionIndex(numOptions):
-    selectionIndex = 0
-    event = keyboard.read_event()
-    if event.event_type == keyboard.KEY_DOWN:
-        match event.name.lower():
-            case "down":
-                selectionIndex = dec_b(selectionIndex, 0)
-            case "up":
-                if selectionIndex > 0:
-                    selectionIndex = inc_b(selectionIndex, numOptions)
-            case "enter":
-                return selectionIndex
-            case "q":
-                return -1
-
+    while True:
+        selectionIndex = 0
+        event = keyboard.read_event()
+        if event.event_type == keyboard.KEY_DOWN:
+            match event.name.lower():
+                case "down":
+                    selectionIndex = dec_b(selectionIndex, 0)
+                case "up":
+                    if selectionIndex > 0:
+                        selectionIndex = inc_b(selectionIndex, numOptions)
+                case "enter":
+                    return selectionIndex
+                case "q":
+                    return -1
 
 def explorer():
     lineLength = 80
@@ -83,6 +86,7 @@ def explorer():
             elif selectionIndex == None:
                 print("something went wrong :(")
             else:
+
                 workingDirectory = directories[selectionIndex]
                 path += workingDirectory
         case "games":
@@ -97,7 +101,6 @@ def explorer():
             else:
                 selectedGame = games[selectionIndex]
                 # call selected game
-
 
 def app():
     explorer()
