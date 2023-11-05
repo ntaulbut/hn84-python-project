@@ -498,8 +498,10 @@ def maze():
                             maze[8][19] = "─┘"
 
                             printMaze(maze, solved)
+
+                            sleep(2)
                         pass
-                    case "qesc":
+                    case "esc":
                         dead = True
                         solved = True
             if(maze[playerPos[0]][playerPos[1]] == "■□"):

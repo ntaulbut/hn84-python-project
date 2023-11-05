@@ -248,25 +248,39 @@ def battleships():
         display()
         # Player turn
         inp = input("Enter square to fire missile (e.g. c4): ")
-        a_row, a_column = decode_notation(inp)
-        fire_missile((a_column, a_row), ai_board, player_knowledge, ai_ships)
-        # AI turn
-        if isinstance(ai_state, RandomState):
-            # Fire at a random square
-            coord = (randint(0, GRID_WIDTH - 1), randint(0, GRID_HEIGHT - 1))
-            fire_missile(
-                coord,
-                player_board,
-                ai_knowledge,
-                player_ships,
-            )
-            # If it's a hit, scan
-            if ai_knowledge[coord[1]][coord[0]] == KnowledgeSquareState.HIT:
-                ai_state = ScanState(coord)
-        elif isinstance(ai_state, ScanState):
-            try:
-                explore = next(ai_state.options)
-                coord = vec_add(ai_state.focus, explore.value)
+        if inp != "exit":
+            a_row, a_column = decode_notation(inp)
+            fire_missile((a_column, a_row), ai_board, player_knowledge, ai_ships)
+            # AI turn
+            if isinstance(ai_state, RandomState):
+                # Fire at a random square
+                coord = (randint(0, GRID_WIDTH - 1), randint(0, GRID_HEIGHT - 1))
+                fire_missile(
+                    coord,
+                    player_board,
+                    ai_knowledge,
+                    player_ships,
+                )
+                # If it's a hit, scan
+                if ai_knowledge[coord[1]][coord[0]] == KnowledgeSquareState.HIT:
+                    ai_state = ScanState(coord)
+            elif isinstance(ai_state, ScanState):
+                try:
+                    explore = next(ai_state.options)
+                    coord = vec_add(ai_state.focus, explore.value)
+                    fire_missile(
+                        coord,
+                        player_board,
+                        ai_knowledge,
+                        player_ships,
+                    )
+                    # If it's a hit
+                    if ai_knowledge[coord[1]][coord[0]] == KnowledgeSquareState.HIT:
+                        ai_state = FollowState(coord, explore)
+                except StopIteration:
+                    ai_state = RandomState()
+            elif isinstance(ai_state, FollowState):
+                coord = vec_add(ai_state.focus, ai_state.orientation.value)
                 fire_missile(
                     coord,
                     player_board,
@@ -275,43 +289,29 @@ def battleships():
                 )
                 # If it's a hit
                 if ai_knowledge[coord[1]][coord[0]] == KnowledgeSquareState.HIT:
-                    ai_state = FollowState(coord, explore)
-            except StopIteration:
-                ai_state = RandomState()
-        elif isinstance(ai_state, FollowState):
-            coord = vec_add(ai_state.focus, ai_state.orientation.value)
-            fire_missile(
-                coord,
-                player_board,
-                ai_knowledge,
-                player_ships,
-            )
-            # If it's a hit
-            if ai_knowledge[coord[1]][coord[0]] == KnowledgeSquareState.HIT:
-                ai_state.focus = coord
-            elif (
-                # If going further would take us off the grid
-                vec_add(ai_state.focus, ai_state.orientation.value)[0] > GRID_WIDTH - 1
-                or vec_add(ai_state.focus, ai_state.orientation.value)[0] < 0
-                or vec_add(ai_state.focus, ai_state.orientation.value)[1]
-                > GRID_HEIGHT - 1
-                or vec_add(ai_state.focus, ai_state.orientation.value)[1] < 0
-            ):
-                ai_state = RandomState()
-            else:
-                ai_state = RandomState()
+                    ai_state.focus = coord
+                elif (
+                    # If going further would take us off the grid
+                    vec_add(ai_state.focus, ai_state.orientation.value)[0] > GRID_WIDTH - 1
+                    or vec_add(ai_state.focus, ai_state.orientation.value)[0] < 0
+                    or vec_add(ai_state.focus, ai_state.orientation.value)[1]
+                    > GRID_HEIGHT - 1
+                    or vec_add(ai_state.focus, ai_state.orientation.value)[1] < 0
+                ):
+                    ai_state = RandomState()
+                else:
+                    ai_state = RandomState()
 
-        # Win condition
-        if all([ship.sunk for ship in player_ships]):
-            display()
-            input("You LOST! Press enter...")
-            run = False
-        if all([ship.sunk for ship in ai_ships]):
-            display()
-            input("You WON! Clue: `AI`. Press enter...")
-            run = False
-
-        if inp == "exit":
+            # Win condition
+            if all([ship.sunk for ship in player_ships]):
+                display()
+                input("You LOST! Press enter...")
+                run = False
+            if all([ship.sunk for ship in ai_ships]):
+                display()
+                input("You WON! Clue: `AI`. Press enter...")
+                run = False
+        else:
             run = False
 
 

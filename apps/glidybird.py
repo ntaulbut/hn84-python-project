@@ -32,7 +32,7 @@ def bird():
         clear()
 
         # 2. Write player character unless they have crashed
-        pipes[x][player_height] = PLAYER_CHAR
+        pipes[x][y] = PLAYER_CHAR
 
         # 1. Shuffle lines
         for i in range(1, WIDTH):
@@ -49,16 +49,16 @@ def bird():
             if keyboard.is_pressed("down"):
                 if (y != 0):
                     player_height += 1
-                    pipes[x][player_height] = PLAYER_CHAR
-                    pipes[x][player_height - 1] = ' '
-                    y += 1
+                    pipes[x][y] = PLAYER_CHAR
+                    pipes[x][y - 1] = ' '
+                    #y += 1
                     continue
             elif keyboard.is_pressed("up"):
                 if (y != 9):
                     player_height -= 1
-                    pipes[x][player_height] = PLAYER_CHAR
-                    pipes[x][player_height + 1] = ' '
-                    y -= 1
+                    pipes[x][y] = PLAYER_CHAR
+                    pipes[x][y + 1] = ' '
+                    #y -= 1
                     continue
 
                     
@@ -76,7 +76,7 @@ def bird():
             print(*[m[i] for m in pipes], sep="")
 
         if (run_count == 150):
-            print("!!  WIN  !!   clue: m-s")
+            print("!!  WIN  !!   m-s")
             print("> Press any key to return")
 
             keyboard.read_event()
