@@ -1,5 +1,4 @@
 from utils import *
-from time import sleep
 from colorama import Fore, Back, Style
 import keyboard
 

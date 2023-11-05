@@ -1,41 +1,30 @@
-from utils import inc_b, dec_b
+from utils import inc_b, dec_b, clear
 import keyboard
 from colorama import Fore, Back, Style
 
-def formatSelected(text):
-    return (Back.WHITE + Fore.BLACK + text + Style.RESET_ALL)
+# Constants
+LINE_LENGTH = 80
+MAX_FILES = 17
 
-def getSelectionIndex(numOptions):
-    while True:
-        selectionIndex = 0
-        event = keyboard.read_event()
-        if event.event_type == keyboard.KEY_DOWN:
-            match event.name.lower():
-                case "down":
-                    selectionIndex = dec_b(selectionIndex, 0)
-                case "up":
-                    if selectionIndex > 0:
-                        selectionIndex = inc_b(selectionIndex, numOptions)
-                case "enter":
-                    return selectionIndex
-                case "q":
-                    return -1
 
-def explorer():
-    lineLength = 80
-    numPossFiles = 17
+def formatSelected(text: str, selected: bool = False) -> str:
+    text = text.ljust(LINE_LENGTH)
+    return Back.WHITE + Fore.BLACK + text + Style.RESET_ALL if selected else text
+
+
+def explorer() -> None:
+    selectionIndex = 0
+
     path = "~/"
     workingDirectory = "~"
-    directories = ["games"]
+    directories = ["Games", "Code", "Documents"]
     games = [
-        "game1 by Beve Stagley",
-        "game2 by James Flycross",
-        "game3 by Mason Flatkin",
-        "game4 by Wax Killson",
-        "game5 by Largahan Waygum",
+        "Beve's Coke Crusade - Beve Stagley",
+        "C Shanty - James Flycross",
+        "game3 - Mason Flatkin",
+        "game4 - Wax Killson",
+        "game5 - Warjahan Maygum",
     ]
-
-    enterOptions = ["Play Game", "Open Directory"]
 
     template = """┌────────────────────────────────────────────────────────────────────────────────┐
 │File Explorer                                                                   │
@@ -61,50 +50,65 @@ def explorer():
 ├────────────────────────────────────────────────────────────────────────────────┤
 │[q] Quit  [Enter] {}│
 └────────────────────────────────────────────────────────────────────────────────┘"""
+    while True:
+        clear()
 
-    match workingDirectory:
-        case "~":
-            directoriesToPrint = [
-                directories[i].ljust(lineLength) for i in range(len(directories))
-            ]
-
-            print(
-                template.format(
-                    path,
-                    *[i for i in directoriesToPrint],
-                    *[
-                        " " * lineLength
-                        for _ in range(numPossFiles - len(directoriesToPrint))
-                    ],
-                    enterOptions[1],
+        # Print
+        match workingDirectory:
+            case "~":
+                print(
+                    template.format(
+                        path.ljust(LINE_LENGTH),
+                        *[
+                            formatSelected(directory, selectionIndex == index)
+                            for index, directory in enumerate(directories)
+                        ],
+                        *[
+                            " " * LINE_LENGTH
+                            for _ in range(MAX_FILES - len(directories))
+                        ],
+                        "Open Directory".ljust(LINE_LENGTH),
+                    )
                 )
-            )
-            numDirectories = len(directories)
-            selectionIndex = getSelectionIndex(numDirectories)
-            if selectionIndex == -1:
-                return None
-            elif selectionIndex == None:
-                print("something went wrong :(")
-            else:
+            case "Games":
+                print(
+                    template.format(
+                        path.ljust(LINE_LENGTH),
+                        *[
+                            formatSelected(game, selectionIndex == index)
+                            for index, game in enumerate(games)
+                        ],
+                        *[" " * LINE_LENGTH for _ in range(MAX_FILES - len(games))],
+                        "Play Game".ljust(LINE_LENGTH),
+                    )
+                )
 
-                workingDirectory = directories[selectionIndex]
-                path += workingDirectory
-        case "games":
-            gamesToPrint = [games[i].ljust(lineLength) for i in range(len(games))]
-            print(template.format(path, *gamesToPrint, enterOptions[0]))
-            numGames = len(games)
-            selectionIndex = getSelectionIndex(numGames)
-            if selectionIndex == -1:
-                return None
-            elif selectionIndex == None:
-                print("something went wrong :(")
-            else:
-                selectedGame = games[selectionIndex]
-                # call selected game
-
-def app():
-    explorer()
+        # Input
+        event = keyboard.read_event()
+        if event.event_type == keyboard.KEY_DOWN:
+            match workingDirectory:
+                case "~":
+                    match event.name:
+                        case "enter":
+                            workingDirectory = directories[selectionIndex]
+                            path += workingDirectory
+                        case "down":
+                            selectionIndex = inc_b(selectionIndex, len(directories) - 1)
+                case "Games":
+                    match event.name:
+                        case "down":
+                            selectionIndex = inc_b(selectionIndex, len(games) - 1)
+                        case "enter":
+                            selectedGame = games[selectionIndex]
+                            # TODO: run selected game
+                            return
+            # All menus
+            match event.name.lower():
+                case "up":
+                    selectionIndex = dec_b(selectionIndex, 0)
+                case "q":
+                    return
 
 
 if __name__ == "__main__":
-    app()
+    explorer()

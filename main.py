@@ -4,6 +4,7 @@ from colorama import init
 from utils import *
 from apps.explorer import explorer
 from apps.mail import mail_app
+from apps.maze import maze
 
 # Initialise colorama
 init()
@@ -32,7 +33,10 @@ while True:
         case "logout":
             dprint("Goodbye :)", after=1)
             exit(1)
-
+        case "maze":
+            maze()
+            clear()
+            dprint(f"\n\nWelcome {username}! You have 1 unread message(s).", 2, 1)
         case "help":
             print(
                 """Commands:
