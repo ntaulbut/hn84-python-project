@@ -311,6 +311,9 @@ def battleships():
             input("You WON! Clue: `AI`. Press enter...")
             run = False
 
+        if inp == "exit":
+            run = False
+
 
 if __name__ == "__main__":
     battleships()
