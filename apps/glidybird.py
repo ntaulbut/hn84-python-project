@@ -76,7 +76,7 @@ def bird():
             print(*[m[i] for m in pipes], sep="")
 
         if (run_count == 150):
-            print("!!  WIN  !!   m-s")
+            print("!!  WIN  !!   clue: m-s")
             print("> Press any key to return")
 
             keyboard.read_event()

@@ -210,7 +210,7 @@ def maze():
             
             printMaze(maze, solved)
             if(x == True):
-                print("V-E-S")
+                print("clue: V-E-S")
                 x = False
             
             sleep(0.2)
@@ -498,9 +498,8 @@ def maze():
                             maze[8][19] = "─┘"
 
                             printMaze(maze, solved)
-                            sleep(2)
                         pass
-                    case "esc":
+                    case "qesc":
                         dead = True
                         solved = True
             if(maze[playerPos[0]][playerPos[1]] == "■□"):

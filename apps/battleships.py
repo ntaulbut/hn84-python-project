@@ -1,4 +1,5 @@
 from typing import Self, Any
+import keyboard
 from enum import Enum
 from utils import *
 from random import randint, choice
@@ -9,16 +10,16 @@ GRID_HEIGHT = 10
 SHIP_LENGTHS = [5, 4, 3, 3, 2]
 
 
-# TODO: set ship positions, ai turn, player turn,
 class SquareState(Enum):
     EMPTY = " "
     SHIP = "#"
+    MISS = "."
     HIT = "X"
 
 
 class KnowledgeSquareState(Enum):
     UNKNOWN = " "
-    MISS = "O"
+    MISS = "."
     HIT = "X"
 
 
@@ -90,8 +91,12 @@ class Ship:
 
     def on_hit(self):
         self.hits += 1
-        if self.hits == len(self.squares):
+        if self.hits >= len(self.squares):
             self.sunk = True
+
+
+def vec_add(a: tuple[int, int], b: tuple[int, int]):
+    return (a[0] + b[0], a[1] + b[1])
 
 
 def fire_missile(
@@ -112,27 +117,27 @@ def fire_missile(
             attacker_knowledge[coord[1]][coord[0]] = KnowledgeSquareState.HIT
             break
     else:
-        # Record a miss only in knowledge not on the main board
         attacker_knowledge[coord[1]][coord[0]] = KnowledgeSquareState.MISS
+        target_board[coord[1]][coord[0]] = SquareState.MISS
     return True
 
 
 def display_board(board: list[list[Any]]):
-    print("│   0 1 2 3 4 5 6 7 8 9")
+    print("│   0 1 2 3 4 5 6 7 8 9   │")
     for i in range(GRID_HEIGHT):
         print(f"│ {chr(i + 65)} ", end="")
-        print(*[square.value for square in board[i]], sep=" ")
+        print(*[square.value for square in board[i]], sep=" ", end="   │\n")
 
 
 def display():
     clear()
-    print("┌" + "─" * 24)
+    print("┌" + "─" * 25 + "┐")
     display_board(player_knowledge)
-    print("├" + "─" * 24 + "┤")
+    print("├" + "─" * 25 + "┤")
     display_board(player_board)
+    print("└" + "─" * 25 + "┘")
 
 
-# AI
 def inverse_orientation(orientation: Orientation):
     match orientation:
         case Orientation.N:
@@ -156,16 +161,18 @@ class RandomState:
 class ScanState:
     def __init__(self, focus):
         self.focus = focus
-        self.options = iter([
-            orientation
-            for orientation in list(Orientation)
-            if not (
-                (self.focus + orientation.value)[0] > GRID_WIDTH - 1
-                or (self.focus + orientation.value)[0] < 0
-                or (self.focus + orientation.value)[1] > GRID_HEIGHT - 1
-                or (self.focus + orientation.value)[1] < 0
-            )
-        ])
+        self.options = iter(
+            [
+                orientation
+                for orientation in list(Orientation)
+                if not (
+                    vec_add(self.focus, orientation.value)[0] > GRID_WIDTH - 1
+                    or vec_add(self.focus, orientation.value)[0] < 0
+                    or vec_add(self.focus, orientation.value)[1] > GRID_HEIGHT - 1
+                    or vec_add(self.focus, orientation.value)[1] < 0
+                )
+            ]
+        )
 
 
 class FollowState:
@@ -194,44 +201,50 @@ def battleships():
     while len(available_ship_lengths) > 0:
         display()
         inp = input("Enter start/end points of a ship to place it (e.g. c0 c2): ")
-        a, b = [i.lower() for i in inp.split()]
-        a_row, a_column = decode_notation(a)
-        b_row, b_column = decode_notation(b)
-        # Determine orientation from a to b
-        orientation = False
-        if a_row == b_row:
-            displacement = b_column - a_column
-            if displacement > 0:
-                orientation = Orientation.E
-            else:
-                orientation = Orientation.W
-        elif a_column == b_column:
-            displacement = b_row - a_row
-            if displacement > 0:
-                orientation = Orientation.S
-            else:
-                orientation = Orientation.N
-        # print(f"fDEBUG {a_row} {a_column} {orientation.value} {abs(displacement) + 1}")
-        length = abs(displacement) + 1
-        if length in available_ship_lengths:
-            player_ships.append(
-                Ship(
+        try:
+            a, b = [i.lower() for i in inp.split()]
+            a_row, a_column = decode_notation(a)
+            b_row, b_column = decode_notation(b)
+            # Determine orientation from a to b
+            orientation = False
+            if a_row == b_row:
+                displacement = b_column - a_column
+                if displacement > 0:
+                    orientation = Orientation.E
+                else:
+                    orientation = Orientation.W
+            elif a_column == b_column:
+                displacement = b_row - a_row
+                if displacement > 0:
+                    orientation = Orientation.S
+                else:
+                    orientation = Orientation.N
+            # print(f"fDEBUG {a_row} {a_column} {orientation.value} {abs(displacement) + 1}")
+            length = abs(displacement) + 1
+            if length in available_ship_lengths:
+                new_ship = Ship(
                     player_board,
                     player_ships,
                     (a_column, a_row),
                     orientation.value,
                     length,
                 )
-            )
-            available_ship_lengths.remove(length)
-        else:
-            display()
-            print("Error: ship length not available.")
-            sleep(2)
+                if new_ship != False:
+                    player_ships.append(new_ship)
+                else:
+                    raise Exception
+                available_ship_lengths.remove(length)
+            else:
+                display()
+                print("Error: ship length not available.")
+                sleep(2)
+        except Exception:
+            pass
 
     ai_state = RandomState()
+    run = True
     # Main game loop
-    while True:
+    while run:
         display()
         # Player turn
         inp = input("Enter square to fire missile (e.g. c4): ")
@@ -250,10 +263,10 @@ def battleships():
             # If it's a hit, scan
             if ai_knowledge[coord[1]][coord[0]] == KnowledgeSquareState.HIT:
                 ai_state = ScanState(coord)
-        if isinstance(ai_state, ScanState):
+        elif isinstance(ai_state, ScanState):
             try:
                 explore = next(ai_state.options)
-                coord = ai_state.focus + explore.value
+                coord = vec_add(ai_state.focus, explore.value)
                 fire_missile(
                     coord,
                     player_board,
@@ -265,8 +278,8 @@ def battleships():
                     ai_state = FollowState(coord, explore)
             except StopIteration:
                 ai_state = RandomState()
-        if isinstance(ai_state, FollowState):
-            coord = ai_state.focus + ai_state.orientation.value
+        elif isinstance(ai_state, FollowState):
+            coord = vec_add(ai_state.focus, ai_state.orientation.value)
             fire_missile(
                 coord,
                 player_board,
@@ -276,19 +289,27 @@ def battleships():
             # If it's a hit
             if ai_knowledge[coord[1]][coord[0]] == KnowledgeSquareState.HIT:
                 ai_state.focus = coord
+            elif (
+                # If going further would take us off the grid
+                vec_add(ai_state.focus, ai_state.orientation.value)[0] > GRID_WIDTH - 1
+                or vec_add(ai_state.focus, ai_state.orientation.value)[0] < 0
+                or vec_add(ai_state.focus, ai_state.orientation.value)[1]
+                > GRID_HEIGHT - 1
+                or vec_add(ai_state.focus, ai_state.orientation.value)[1] < 0
+            ):
+                ai_state = RandomState()
             else:
                 ai_state = RandomState()
 
         # Win condition
         if all([ship.sunk for ship in player_ships]):
-            print("AI WON")
+            display()
+            input("You LOST! Press enter...")
+            run = False
         if all([ship.sunk for ship in ai_ships]):
-            print("PLAYER WON")
-
-    # begin game
-    # winnerExists = False
-    # while not winnerExists:
-    #     pass
+            display()
+            input("You WON! Clue: `AI`. Press enter...")
+            run = False
 
 
 if __name__ == "__main__":

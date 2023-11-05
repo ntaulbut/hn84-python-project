@@ -1,13 +1,17 @@
 from maskpass import askpass
-from time import sleep
 from colorama import init
 from utils import *
 from apps.explorer import explorer
 from apps.mail import mail_app
 from apps.maze import maze
+from apps.top_secret import top_secret
+from apps.battleships import battleships
+from apps.glidybird import bird
 
 # Initialise colorama
 init()
+
+userInput = ""
 
 # Login screen
 clear()
@@ -28,8 +32,10 @@ while True:
     match inp:
         case "mail":
             mail_app(username)
+            clear()
         case "explorer":
             explorer(username)
+            clear()
         case "logout":
             dprint("Goodbye :)", after=1)
             exit(1)
@@ -41,22 +47,32 @@ while True:
             print(
                 """Commands:
     - mail: open mailbox
+    - maze: opens maze
     - help: list all commands
     - explorer: run file explorer
-    - logout: close session"""
+    - battleships: play battleships
+    - bird: play glidy bird
+    - logout: close session
+    - topSecret"""
             )
-        case _:
-            print(
-                f"{inp.split()[0]}: command not found. Enter 'help' for a list of commands."
-            )
-    if password == "NottsRulez":
-        if inp == "max":
+        case "max":
             print_art("max")
-        elif inp == "nathaniel":
+        case "nathaniel":
             print_art("frog")
-        elif inp == "mayukhi":
+        case "mayukhi":
             print_art("mayukhi")
-        elif inp == "oli":
+        case "oli":
             print_art("blahaj")
-
-        
+        case "topSecret":
+            top_secret()
+        case "battleships":
+            battleships()
+        case "bird":
+            bird()
+        case _:
+            try:
+                print(
+                    f"{inp.split()[0]}: command not found. Enter 'help' for a list of commands."
+                )
+            except IndexError:
+                pass
