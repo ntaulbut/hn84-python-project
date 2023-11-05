@@ -117,7 +117,7 @@ def printMaze(maze, solved):
 # https://en.wikipedia.org/wiki/Box-drawing_character
 
 # player: :) ■ 
-# bad guy: <> ඞ
+# bad guy: <> □
 
 def maze():
 
@@ -145,7 +145,7 @@ def maze():
             "─", "──", "┬", "──", "┬", "──", "┐"], \
 
             [" ", "■ ", " ", "  ", " ", "  ", "│", "  ", " ", "  ", "│", "  ", \
-            " ", "  ", "│", " .", " ", " .", " ", " .", " ", " ඞ", "│", "  ", \
+            " ", "  ", "│", " .", " ", " .", " ", " .", " ", " □", "│", "  ", \
             " ", "  ", "│", "  ", "│", "  ", "│"], \
 
             ["├", "──", "─", "──", "┐", "  ", " ", "  ", "│", "  ", " ", "  ", \
@@ -156,8 +156,8 @@ def maze():
             "│", "  ", "│", "  ", "├", "──", "┘", "  ", "│", "  ", " ", "  ", \
             " ", "  ", "│", "  ", " ","  ", "│"], \
 
-            ["│","  ","└","──","┘","  ","│","  "," ","  ","│"," ඞ","│","  ","│","  ","│"," ."," ", \
-            " ."," "," ඞ","│","  ","┌","──","┘","  ","│","  ","│", "  "], \
+            ["│","  ","└","──","┘","  ","│","  "," ","  ","│"," □","│","  ","│","  ","│"," ."," ", \
+            " ."," "," □","│","  ","┌","──","┘","  ","│","  ","│", "  "], \
 
             ["│","  "," ","  "," ","  ","├","──","┐","  ","│"," ."," ","  ","│","  ",\
             "│"," .","│","  ","│","  ","│","  ","│","  "," ","  ","└","──","┤"] ,\
@@ -177,8 +177,8 @@ def maze():
             ["│","  ","┌","──","┤","  ","│","  "," ","  ","│","  ","│","  "," ","  ", \
             "│","  ","│","  ","│","  "," "," .","└","──","┐","  ","│","  ","│"], \
 
-            ["│", " .", "│", "  ", "├", "──", "┘", "  ", "┌", "──", "┤", "  ", "│", " ඞ", "│", "  ", "├", "──", \
-            "┤", "  ", "├", "──", "┐", " ඞ", " ",  "  ", "│", "  ", "│", "  ", "│"], \
+            ["│", " .", "│", "  ", "├", "──", "┘", "  ", "┌", "──", "┤", "  ", "│", " □", "│", "  ", "├", "──", \
+            "┤", "  ", "├", "──", "┐", " □", " ",  "  ", "│", "  ", "│", "  ", "│"], \
 
             ["│"," ."," ","  ","│","  "," ","  ","│","  ","│","  "," "," .","│","  ", \
             "│","  ","│","  ","│","  ","├","──","┐","  ","│","  "," ","  ","│"], \
@@ -186,7 +186,7 @@ def maze():
             ["│", " .", "│", "  ", "└", "──", "─", "  ", " ", "  ", "│", "  ", "│", " .", "│", "  ", "│", "  ", \
             "│", "  ", " ", "  ", "│", "  ", "│", "  ", " ", "  ", "│", "  ", "│"], \
 
-            ["│"," ඞ","│","  "," ","  "," ","  ","│","  "," ","  ","│"," .","│","  ", \
+            ["│"," □","│","  "," ","  "," ","  ","│","  "," ","  ","│"," .","│","  ", \
             " ","  ","│","  ","│","  ","│","  "," ","  ","│","  ","│","  "," "], \
                 
             ["└","──","┴","──","─","──","─","──","┴","──","─","──","┴","──","┴","──", \
@@ -208,7 +208,7 @@ def maze():
                 for i in range(6):
                     #swaps amonug with dot
                     if(maze[enemy[i][enemyCycle][0]][enemy[i][enemyCycle][1]] == maze[playerPos[0]][playerPos[1]]):
-                        maze[enemy[i][enemyCycle][0]][enemy[i][enemyCycle][1]] = "■ඞ"
+                        maze[enemy[i][enemyCycle][0]][enemy[i][enemyCycle][1]] = "■□"
                         maze[enemy[i][enemyCycle-1][0]][enemy[i][enemyCycle-1][1]] = " ."
                         panic = 1
                         prevSpace = [enemy[i][enemyCycle-1][0],enemy[i][enemyCycle-1][1]]
@@ -227,7 +227,7 @@ def maze():
                 for i in range(6):
                     #swaps amonug with dot
                     if(maze[enemy[i][enemyCycle][0]][enemy[i][enemyCycle][1]] == maze[playerPos[0]][playerPos[1]]):
-                        maze[enemy[i][enemyCycle][0]][enemy[i][enemyCycle][1]] = "■ඞ"
+                        maze[enemy[i][enemyCycle][0]][enemy[i][enemyCycle][1]] = "■□"
                         maze[enemy[i][enemyCycle+1][0]][enemy[i][enemyCycle+1][1]] = " ."
                         panic = 1
                         prevSpace = [enemy[i][enemyCycle+1][0],enemy[i][enemyCycle+1][1]]
@@ -257,9 +257,9 @@ def maze():
                     case "down":
                         if(playerPos[2]==0):
                             #player moves onto enemy tile
-                            if(maze[playerPos[0]+1][playerPos[1]] == " ඞ"):
+                            if(maze[playerPos[0]+1][playerPos[1]] == " □"):
                                 maze[playerPos[0]][playerPos[1]] = "  "
-                                maze[playerPos[0]+1][playerPos[1]] = "■ඞ"
+                                maze[playerPos[0]+1][playerPos[1]] = "■□"
                                 dead = True
                             #player moves onto empty tile
                             if(maze[playerPos[0]+1][playerPos[1]] == "  "):
@@ -273,9 +273,9 @@ def maze():
                         if(playerPos[2]==1):
                             if(panic == 0):
                                 #player moves onto enemy tile
-                                if(maze[playerPos[0]+1][playerPos[1]] == " ඞ"):
+                                if(maze[playerPos[0]+1][playerPos[1]] == " □"):
                                     maze[playerPos[0]][playerPos[1]] = " ."
-                                    maze[playerPos[0]+1][playerPos[1]] = "■ඞ"
+                                    maze[playerPos[0]+1][playerPos[1]] = "■□"
                                     dead = True
                                 #player moves onto empty tile
                                 if(maze[playerPos[0]+1][playerPos[1]] == "  "):
@@ -289,12 +289,12 @@ def maze():
                             if(panic == 1):
                                 #player moves onto empty tile
                                 if(maze[playerPos[0]+1][playerPos[1]] == "  "):
-                                    maze[playerPos[0]][playerPos[1]] = " ඞ"
+                                    maze[playerPos[0]][playerPos[1]] = " □"
                                     maze[playerPos[0]+1][playerPos[1]] = "■ "
                                 #player moves onto enemy path
                                 if(maze[playerPos[0]+1][playerPos[1]] == " ."):
                                     if(maze[playerPos[0]+1][playerPos[1]] != maze[prevSpace[0]][prevSpace[1]]):
-                                        maze[playerPos[0]][playerPos[1]] = " ඞ"
+                                        maze[playerPos[0]][playerPos[1]] = " □"
                                         maze[playerPos[0]+1][playerPos[1]] = "■."
                                     else:
                                         dead = True
@@ -303,9 +303,9 @@ def maze():
                     case "up":
                         if(playerPos[2]==0):
                             #player moves onto enemy tile
-                            if(maze[playerPos[0]-1][playerPos[1]] == " ඞ"):
+                            if(maze[playerPos[0]-1][playerPos[1]] == " □"):
                                 maze[playerPos[0]][playerPos[1]] = "  "
-                                maze[playerPos[0]-1][playerPos[1]] = "■ඞ"
+                                maze[playerPos[0]-1][playerPos[1]] = "■□"
                                 dead = True
                             #player moves onto empty tile
                             if(maze[playerPos[0]-1][playerPos[1]] == "  "):
@@ -319,9 +319,9 @@ def maze():
                         if(playerPos[2]==1):
                             if(panic == 0):
                                 #player moves onto enemy tile
-                                if(maze[playerPos[0]-1][playerPos[1]] == " ඞ"):
+                                if(maze[playerPos[0]-1][playerPos[1]] == " □"):
                                     maze[playerPos[0]][playerPos[1]] = " ."
-                                    maze[playerPos[0]-1][playerPos[1]] = "■ඞ"
+                                    maze[playerPos[0]-1][playerPos[1]] = "■□"
                                     dead = True
                                 #player moves onto empty tile
                                 if(maze[playerPos[0]-1][playerPos[1]] == "  "):
@@ -334,12 +334,12 @@ def maze():
                             if(panic == 1):
                                 #player moves onto empty tile
                                 if(maze[playerPos[0]-1][playerPos[1]] == "  "):
-                                    maze[playerPos[0]][playerPos[1]] = " ඞ"
+                                    maze[playerPos[0]][playerPos[1]] = " □"
                                     maze[playerPos[0]-1][playerPos[1]] = "■ "
                                 #player moves onto enemy path
                                 if(maze[playerPos[0]-1][playerPos[1]] == " ."):
                                     if(maze[playerPos[0]-1][playerPos[1]] != maze[prevSpace[0]][prevSpace[1]]):
-                                        maze[playerPos[0]][playerPos[1]] = " ඞ"
+                                        maze[playerPos[0]][playerPos[1]] = " □"
                                         maze[playerPos[0]-1][playerPos[1]] = "■."
                                     else:
                                         dead = True
@@ -349,9 +349,9 @@ def maze():
                         if(playerPos[1] != 1):
                             if(playerPos[2]==0):
                                 #player moves onto enemy tile
-                                if(maze[playerPos[0]][playerPos[1]-2] == " ඞ" and maze[playerPos[0]][playerPos[1]-1] != "│"):
+                                if(maze[playerPos[0]][playerPos[1]-2] == " □" and maze[playerPos[0]][playerPos[1]-1] != "│"):
                                     maze[playerPos[0]][playerPos[1]] = "  "
-                                    maze[playerPos[0]][playerPos[1]-2] = "■ඞ"
+                                    maze[playerPos[0]][playerPos[1]-2] = "■□"
                                     dead = True
                                 #player moves onto empty tile
                                 if(maze[playerPos[0]][playerPos[1]-2] == "  " and maze[playerPos[0]][playerPos[1]-1] != "│"):
@@ -364,9 +364,9 @@ def maze():
                             if(playerPos[2]==1):
                                 if(panic == 0):
                                     #player moves onto enemy tile
-                                    if(maze[playerPos[0]][playerPos[1]-2] == " ඞ" and maze[playerPos[0]][playerPos[1]-1] != "│"):
+                                    if(maze[playerPos[0]][playerPos[1]-2] == " □" and maze[playerPos[0]][playerPos[1]-1] != "│"):
                                         maze[playerPos[0]][playerPos[1]] = " ."
-                                        maze[playerPos[0]][playerPos[1]-2] = "■ඞ"
+                                        maze[playerPos[0]][playerPos[1]-2] = "■□"
                                         dead = True
                                     #player moves onto empty tile
                                     if(maze[playerPos[0]][playerPos[1]-2] == "  " and maze[playerPos[0]][playerPos[1]-1] != "│"):
@@ -379,12 +379,12 @@ def maze():
                                 if(panic == 1):
                                     #player moves onto empty tile
                                     if(maze[playerPos[0]][playerPos[1]-2] == "  " and maze[playerPos[0]][playerPos[1]-1] != "│"):
-                                        maze[playerPos[0]][playerPos[1]] = " ඞ"
+                                        maze[playerPos[0]][playerPos[1]] = " □"
                                         maze[playerPos[0]][playerPos[1]-2] = "■ "
                                     #player moves onto enemy path
                                     if(maze[playerPos[0]][playerPos[1]-2] == " ." and maze[playerPos[0]][playerPos[1]-1] != "│"):
                                         if(maze[playerPos[0]][playerPos[1]-2] != maze[prevSpace[0]][prevSpace[1]]):
-                                            maze[playerPos[0]][playerPos[1]] = " ඞ"
+                                            maze[playerPos[0]][playerPos[1]] = " □"
                                             maze[playerPos[0]][playerPos[1]-2] = "■."
                                         else:
                                             dead = True
@@ -395,9 +395,9 @@ def maze():
                         if(playerPos[1] != 29):
                             if(playerPos[2] == 0):
                                 #player moves onto enemy tile
-                                if(maze[playerPos[0]][playerPos[1]+2] == " ඞ" and maze[playerPos[0]][playerPos[1]+1] != "│"):
+                                if(maze[playerPos[0]][playerPos[1]+2] == " □" and maze[playerPos[0]][playerPos[1]+1] != "│"):
                                     maze[playerPos[0]][playerPos[1]] = "  "
-                                    maze[playerPos[0]][playerPos[1]+2] = "■ඞ"
+                                    maze[playerPos[0]][playerPos[1]+2] = "■□"
                                     dead = True
                                 #player moves onto empty tile
                                 if(maze[playerPos[0]][playerPos[1]+2] == "  " and maze[playerPos[0]][playerPos[1]+1] != "│"):
@@ -410,9 +410,9 @@ def maze():
                             if(playerPos[2] == 1):
                                 if(panic == 0):
                                     #player moves onto enemy tile
-                                    if(maze[playerPos[0]][playerPos[1]+2] == " ඞ" and maze[playerPos[0]][playerPos[1]+1] != "│"):
+                                    if(maze[playerPos[0]][playerPos[1]+2] == " □" and maze[playerPos[0]][playerPos[1]+1] != "│"):
                                         maze[playerPos[0]][playerPos[1]] = " ."
-                                        maze[playerPos[0]][playerPos[1]+2] = "■ඞ"
+                                        maze[playerPos[0]][playerPos[1]+2] = "■□"
                                         dead = True
                                     #player moves onto empty tile
                                     if(maze[playerPos[0]][playerPos[1]+2] == "  " and maze[playerPos[0]][playerPos[1]+1] != "│"):
@@ -425,12 +425,12 @@ def maze():
                                 if(panic == 1):
                                     #player moves onto empty tile
                                     if(maze[playerPos[0]][playerPos[1]+2] == "  " and maze[playerPos[0]][playerPos[1]+1] != "│"):
-                                        maze[playerPos[0]][playerPos[1]] = " ඞ"
+                                        maze[playerPos[0]][playerPos[1]] = " □"
                                         maze[playerPos[0]][playerPos[1]+2] = "■ "
                                     #player moves onto enemy path
                                     if(maze[playerPos[0]][playerPos[1]+2] == " ." and maze[playerPos[0]][playerPos[1]+1] != "│"):
                                         if(maze[playerPos[0]][playerPos[1]+2] != maze[prevSpace[0]][prevSpace[1]]):
-                                            maze[playerPos[0]][playerPos[1]] = " ඞ"
+                                            maze[playerPos[0]][playerPos[1]] = " □"
                                             maze[playerPos[0]][playerPos[1]+2] = "■."
                                         else:
                                             dead = True
@@ -474,7 +474,7 @@ def maze():
                             printMaze(maze, solved)
                             sleep(2)
                         pass
-            if(maze[playerPos[0]][playerPos[1]] == "■ඞ"):
+            if(maze[playerPos[0]][playerPos[1]] == "■□"):
                 dead = True
         
         if(solved):

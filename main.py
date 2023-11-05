@@ -12,7 +12,7 @@ init()
 # Login screen
 clear()
 print("Welcome to the Machine: Wimbows84 © 1984. Please authenticate.")
-print("========================================================")
+print("==============================================================")
 username = input("Username: ")
 password = askpass("Password: ", mask="*")
 dprint("Connecting", end="", flush=True)
