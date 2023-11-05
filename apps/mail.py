@@ -7,6 +7,7 @@ MAX_EMAILS = 17
 MAX_EMAIL_LINES = 16
 EMAIL_WIDTH = 76
 
+user = ""
 
 class Email:
     def __init__(self, subject, author, body):
@@ -14,24 +15,38 @@ class Email:
         self.author = author
         self.body = body
 
+emails: list[Email] = []
 
-emails: list[Email] = [
-    Email(
-        "Hello this is a subject",
-        "Jeff",
-        """Hi John,
-    
-There's been a few problems with the mainframe lately.
-Someone has encrypted our files...
-    
-Hope you can fix it.
-    
+def setEmails():
+    global emails
+    emails = [
+        Email(
+            "Mainframe Issues",
+            "Clara Oft",
+            f"""Hi {user},
+        
+There's been a few problems with the mainframe lately. Some weird games have
+appeared on our system. We think the key to this mystery might be hidden
+somewhere within them.
+
+Please can you try out these games and report back with your findings. 
+        
 Regards,
-Jeff""",
+Clara""",
+        ),
+        Email(
+            "HOT SINGLE GPUs IN YOUR AREA!!!1!!1!",
+            "intelofficial1209@hotmail.com",
+            """Hello sir,
+
+virus on ur computer lol 
+        
+CLICK LINK FOR FREE ROBUX ->>>> https://www.youtube.com/watch?v=dQw4w9WgXcQ 
+
+Regards,
+Brack O'bamn""",
     ),
-    Email("This is another subject", "Bob", "Email body!!!"),
-    Email("Something about HackNotss84", "Trijit", "Your ticket is here."),
-]
+    ]
 
 
 def email_subject(email: Email, index: int):
@@ -127,7 +142,10 @@ menu = "inbox"
 selection_index = 0
 
 
-def mail_app():
+def mail_app(username):
+    global user
+    user = username
+    setEmails()
     global run, menu, selection_index
     run = True
     menu = "inbox"
@@ -138,4 +156,4 @@ def mail_app():
 
 
 if __name__ == "__main__":
-    mail_app()
+    mail_app("Bob Fishcake")

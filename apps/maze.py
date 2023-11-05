@@ -10,7 +10,9 @@ def printMaze(maze, solved):
     clear()
     for i in range(16):
             for l in range(31):
+                #prints maze
                 print(maze[i][l], end="")
+                #stores player position when found
                 if (maze[i][l] == "■ "):
                     playerPos[0] = i
                     playerPos[1] = l
@@ -19,7 +21,12 @@ def printMaze(maze, solved):
                     playerPos[0] = i
                     playerPos[1] = l
                     playerPos[2] = 1
+                if (maze[i][l] == "■x"):
+                    playerPos[0] = i
+                    playerPos[1] = l
+                    playerPos[2] = 2
 
+            #prints coke can
             if(solved):
                 if (i == 10):
                     print("   /─────\\")
@@ -84,7 +91,7 @@ def printMaze(maze, solved):
 #└──┴────────┴─────┴──┴xx───┴──┴──┴─────┴──┴──┘   \─────/
 
 #┌────────┬─────┬─────┬xx─────────┬─────┬──┬──┐ 
-# ■       │     │     │ .  .  4  .│     │  │  │ 
+# ■       │     │     │ .  .  4  .│     │  │ x│ 
 #├─────┐     │     ┌──┤  │  ┌──┐  └───     │  │ 
 #│     │  │  └──┐  │  │  ├──┘  │        │     │ 
 #│  └──┘  │     │ .│  │  │ .  .  5│  ┌──┘  │  │ 
@@ -118,6 +125,7 @@ def printMaze(maze, solved):
 
 # player: :) ■ 
 # bad guy: <> □
+# X
 
 def maze():
 
@@ -127,6 +135,7 @@ def maze():
     
     #cycle_iter = cycle(chain(range(3), range(3, 0, -1)))
     
+    #arrays of all enemy paths
     enemy = [[[14, 1], [13, 1], [12, 1], [11, 1]], [[4, 11], [5, 11], [6, 11], [7, 11]], \
         [[11, 13], [12, 13], [13, 13], [14, 13]], [[1, 21], [1, 19], [1, 17], [1, 15]], \
         [[4, 21], [4, 19], [4, 17], [5, 17]], [[11, 23], [10, 23], [9, 23], [8, 23]]]
@@ -138,6 +147,7 @@ def maze():
         cycleFlip = 0
         panic = 0
         dead = False
+        x = False
         #HARD CODE MAZE HERE
         maze = [
             ["┌", "──", "─", "──", "─", "──", "┬", "──", "─", "──", "┬", "──", \
@@ -146,7 +156,7 @@ def maze():
 
             [" ", "■ ", " ", "  ", " ", "  ", "│", "  ", " ", "  ", "│", "  ", \
             " ", "  ", "│", " .", " ", " .", " ", " .", " ", " □", "│", "  ", \
-            " ", "  ", "│", "  ", "│", "  ", "│"], \
+            " ", "  ", "│", "  ", "│", " x", "│"], \
 
             ["├", "──", "─", "──", "┐", "  ", " ", "  ", "│", "  ", " ", "  ", \
             "┌", "──", "┤", "  ", "│", "  ", "┌", "──", "┐", "  ", "└", "──", \
@@ -193,11 +203,15 @@ def maze():
             "─","──","┴","──","┴","──","┴","──","─","──","┴","──","┴","──","┘"]
             ]
             
+            #This took way too long
 
         while (not dead):
             #prints out entire maze
             
             printMaze(maze, solved)
+            if(x == True):
+                print("V-E-S")
+                x = False
             
             sleep(0.2)
 
@@ -249,6 +263,8 @@ def maze():
             #   temp = maze[next_step_coord[0]][next_step_coord[1]]
             #   maze[next_step_coord[0]][next_step_coord[1]] = "A"
             #   maze[prev_step_coord[1]][prev_step_coord[1]] = temp
+            #
+            # show off
             
             event = keyboard.read_event()
 
@@ -300,6 +316,10 @@ def maze():
                                         dead = True
                                 panic = 0
                                 pass
+                        if(playerPos[2] == 2):
+                                #player move off x tile
+                                maze[playerPos[0]][playerPos[1]] = " x"
+                                maze[playerPos[0]+1][playerPos[1]] = "■ "
                     case "up":
                         if(playerPos[2]==0):
                             #player moves onto enemy tile
@@ -315,6 +335,11 @@ def maze():
                             if(maze[playerPos[0]-1][playerPos[1]] == " ."):
                                 maze[playerPos[0]][playerPos[1]] = "  "
                                 maze[playerPos[0]-1][playerPos[1]] = "■."
+                            #player moves onto x tile
+                            if(maze[playerPos[0]-1][playerPos[1]] == " x"):
+                                maze[playerPos[0]][playerPos[1]] = "  "
+                                maze[playerPos[0]-1][playerPos[1]] = "■x"
+                                x = True
                             pass
                         if(playerPos[2]==1):
                             if(panic == 0):
@@ -437,10 +462,11 @@ def maze():
                                     panic = 0
                         elif(playerPos[0] == 14):
                             maze[playerPos[0]][playerPos[1]] = "  "
-                            print("WIN")
+                            #print("WIN")
                             solved = True
                             dead = True
 
+                            #prints out WIN box
                             maze[6][11] = " ┌"
                             maze[6][12] = "─"
                             maze[6][13] = "──"
@@ -474,11 +500,15 @@ def maze():
                             printMaze(maze, solved)
                             sleep(2)
                         pass
+                    case "esc":
+                        dead = True
+                        solved = True
             if(maze[playerPos[0]][playerPos[1]] == "■□"):
                 dead = True
         
         if(solved):
-            print("WIN")
+            # print("WIN")
+            clear()
             break
 
         #ASSIGN GAME OVER ART HERE
@@ -517,10 +547,5 @@ def maze():
         maze[8][19] = "┘ "
 
         printMaze(maze, solved)
-        
         sleep(2.5)
-    
-    # win sequence
-    
-    
 

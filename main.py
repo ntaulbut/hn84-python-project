@@ -20,23 +20,23 @@ for _ in range(3):
     dprint(".", 0.5, end="", flush=True)
 
 # Terminal loop
-dprint(f"\n\nWelcome {username}! You have 1 unread message(s).", 2, 1)
+dprint(f"\n\nWelcome {username}! You have 2 unread message(s).", 2, 1)
 
 while True:
     inp = input(f"{username}@mainframe:~$ ")
 
     match inp:
         case "mail":
-            mail_app()
+            mail_app(username)
         case "explorer":
-            explorer()
+            explorer(username)
         case "logout":
             dprint("Goodbye :)", after=1)
             exit(1)
         case "maze":
             maze()
             clear()
-            dprint(f"\n\nWelcome {username}! You have 1 unread message(s).", 2, 1)
+            dprint(f"\n\nWelcome {username}! You have 2 unread message(s).", 2, 1)
         case "help":
             print(
                 """Commands:
@@ -45,16 +45,18 @@ while True:
     - explorer: run file explorer
     - logout: close session"""
             )
-        case "max":
-            print_art("max")
-        case "nathaniel":
-            print_art("frog")
-        case "mayukhi":
-            print_art("mayukhi")
-        case "oli":
-            print_art("blahaj")
-
         case _:
             print(
                 f"{inp.split()[0]}: command not found. Enter 'help' for a list of commands."
             )
+    if password == "NottsRulez":
+        if inp == "max":
+            print_art("max")
+        elif inp == "nathaniel":
+            print_art("frog")
+        elif inp == "mayukhi":
+            print_art("mayukhi")
+        elif inp == "oli":
+            print_art("blahaj")
+
+        
